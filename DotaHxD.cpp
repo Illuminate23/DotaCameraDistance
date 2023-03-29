@@ -1,4 +1,4 @@
-﻿#include <iostream>
+#include <iostream>
 #include <fstream>
 #include <iomanip>
 #include <string>
@@ -8,7 +8,7 @@ class Exception
 private:
     std::string msg_;
 public:
-    Exception(const std::string & msg) : msg_(msg) {}
+    Exception(const std::string& msg) : msg_(msg) {}
     ~Exception() {}
 
     std::string getMessage() const { return(msg_); }
@@ -23,7 +23,7 @@ private:
 public:
     DotaCameraDistance()
     {
-        file.open("C:\\Program Files (x86)\\Steam\\steamapps\\common\\dota 2 beta\\game\\dota\\bin\\win64\\client.dll",
+       file.open("C:\\Program Files (x86)\\Steam\\steamapps\\common\\dota 2 beta\\game\\dota\\bin\\win64\\client.dll",
             std::ios::in | std::ios::out | std::ios::binary);
         if (!file)
         {
@@ -34,30 +34,28 @@ public:
     {
         file.close();
     }
-    int GetCameraDistance() const
+    float GetCameraDistance() const
     {
         std::cout << "Enter camera distance: ";
-        int distance;
+        float distance;
         std::cin >> distance;
         return distance;
     }
-    unsigned char* ConvertDistance(float Distance) const
+    void ChangeCameraDistance()
     {
-        unsigned char* converted_distance = reinterpret_cast<unsigned char*>(&Distance);
-
-        return converted_distance;
-
-    }
-    void ChangeCameraDistance() 
-    {
-        unsigned char* replace_value = ConvertDistance(GetCameraDistance());
-        
+        float d = GetCameraDistance();
+        unsigned char* rv = (unsigned char*)&d;
+        unsigned char replace_value[4];
+        for (int i = 0; i < 4; ++i)
+        {
+            replace_value[i] = rv[i];
+        }
         file.seekg(0, std::ios::end);
         int file_size = file.tellg();
         file.seekg(0, std::ios::beg);
         char* buffer = new char[file_size];
         file.read(buffer, file_size);
-        
+
         char* p = buffer;
         int num_replacements = 0;
         while (p < buffer + file_size) {
@@ -69,7 +67,7 @@ public:
         }
 
         if (num_replacements > 0) {
-            std::cout << "Value founded and changed" << num_replacements << " times." << std::endl;
+            std::cout << "Value founded and changed " << num_replacements << " times." << std::endl;
             file.seekp(0, std::ios::beg);
             file.write(buffer, file_size);
         }
