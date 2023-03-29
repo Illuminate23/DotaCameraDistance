@@ -1,2 +1,2 @@
 # DotaCameraDistance
-<h1>DotaCameraDistance</h1>
+Приложение позволяет изменять дистанацию камеры в Dota 2 на нужное значение.
